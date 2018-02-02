@@ -6,9 +6,15 @@ const http       = require('http');
 const bodyParser = require('body-parser');
 //morgan is a logging framework.
 const morgan     = require('morgan');
+const app        = express();
 const router     = require('./router');
+const mongoose   = require('mongoose');
 
-const app = express();
+//DB setup
+mongoose.connect('mongodb://localhost/auth');
+
+
+
 
 //App setup
 //Getting express to talk to the world
