@@ -22,11 +22,14 @@ userSchema.pre('save', function(next){
   //then run callback
   bcrypt.genSalt(10, function(err, salt){
     if(err){ return next(err); }
+
     //hash our password using our salt (encrypts our password)
     bcrypt.hash(user.password, salt, null, function(err, hash){
       if(err){
         return next(err);
       }
+
+      //overwrite plain text password with encrypted password
       user.password = hash;
       next();
     });
