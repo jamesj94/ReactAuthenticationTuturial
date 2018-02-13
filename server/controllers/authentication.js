@@ -1,5 +1,31 @@
-exports.signup = function(req, res, next){
-  // See if user with a specific email exists
+const User = require('../models/user');
 
-  //If user with email does exist, return an error
+exports.signup = function(req, res, next){
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if(!email || !password){
+    return res.status(422).send({error: 'You must provide email and password'});
+  }
+  // See if user with a specific email exists
+  User.findOne({email: email}, function(err, existing){
+    //handles the case if database fails
+    if(err){ return next(err); }
+    //If user with email does exist, return an error
+    if(existing){
+      return res.status(422).send({error: 'Email is in use'});
+    }
+
+    //if a user with email does NOT exist, create and save user record
+    const user = new User({
+      email: email,
+      password: password
+    });
+
+    user.save(function(err){
+      if(err){ return next(err); }
+    });
+    //respond to request indicating the user was created
+    res.json({ success: true });
+  });
 }
